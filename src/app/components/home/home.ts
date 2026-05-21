@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-home',
@@ -9,10 +10,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
+export class Home implements OnInit {
   nome = '';
   telefone = '';
   contatos = signal<{ nome: string; telefone: string }[]>([]);
+  dadosApi: any[] = [];
+
+  constructor(private api: ApiService) {}
+
+  ngOnInit() {
+    this.api.getDados().subscribe((resultado: any) => {
+      this.dadosApi = resultado as any[];
+      console.log(this.dadosApi);
+    });
+  }
 
   adicionar() {
     if (this.nome && this.telefone) {
